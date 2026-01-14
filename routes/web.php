@@ -6,8 +6,18 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\ProjectImportController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Admin routes for Project CSV import (MoonShine)
+Route::middleware(['auth:moonshine'])
+    ->prefix('admin/projects')
+    ->name('admin.projects.')
+    ->group(function () {
+        Route::get('/import', [ProjectImportController::class, 'showForm'])->name('import');
+        Route::post('/import', [ProjectImportController::class, 'import'])->name('import.store');
+    });
 
 Route::prefix('services')->name('services.')->group(function () {
     Route::get('/', [ServiceController::class, 'index'])->name('index');
