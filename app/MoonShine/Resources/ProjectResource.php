@@ -25,7 +25,6 @@ use MoonShine\UI\Decorations\Tabs;
 use MoonShine\UI\Decorations\Heading;
 use MoonShine\UI\Decorations\Grid;
 use MoonShine\UI\Decorations\Column;
-use MoonShine\UI\Components\ActionButton;
 use MoonShine\Nova\Fields\RangeSlider;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\UI\ComponentContract;
@@ -55,6 +54,8 @@ class ProjectResource extends ModelResource
     {
         return [
             ID::make()->sortable(),
+            Text::make('External ID', 'external_id')
+                ->nullable(),
             Text::make('Title', 'title'),
             Text::make('Category', 'category.name'),
             Currency::make('Price From', 'price_from')->symbol(''),
@@ -78,6 +79,10 @@ class ProjectResource extends ModelResource
                     Tab::make('Main', [
                         Grid::make([
                             Column::make([
+                                Text::make('External ID', 'external_id')
+                                    ->nullable()
+                                    ->placeholder('Optional external identifier'),
+                                
                                 Text::make('Title', 'title')
                                     ->required()
                                     ->placeholder('Enter project title'),
@@ -226,6 +231,7 @@ class ProjectResource extends ModelResource
     protected function rules($item): array
     {
         return [
+            'external_id' => ['nullable', 'string', 'max:255', 'unique:projects,external_id,' . ($item?->id ?? '')],
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:projects,slug,' . ($item?->id ?? '')],
             'category_id' => ['required', 'exists:project_categories,id'],

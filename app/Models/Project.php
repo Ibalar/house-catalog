@@ -14,6 +14,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
+        'external_id',
         'title',
         'slug',
         'description',
@@ -36,6 +37,7 @@ class Project extends Model
     ];
 
     protected $casts = [
+        'external_id' => 'string',
         'slug' => 'string',
         'category_id' => 'integer',
         'price_from' => 'decimal:2',
