@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\MoonShine\Resources\BlockResource;
+use App\MoonShine\Resources\LeadResource;
+use App\MoonShine\Resources\PageResource;
+use App\MoonShine\Resources\ProjectCategoryResource;
+use App\MoonShine\Resources\ProjectResource;
+use App\MoonShine\Resources\ServiceResource;
+use App\MoonShine\Resources\SettingResource;
 use Illuminate\Support\ServiceProvider;
 use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
 use MoonShine\Laravel\DependencyInjection\MoonShine;
@@ -20,8 +27,22 @@ class MoonShineServiceProvider extends ServiceProvider
     {
         $core
             ->resources([
+                // Users and Roles (default MoonShine)
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,
+                
+                // Content Management
+                PageResource::class,
+                BlockResource::class,
+                
+                // Catalog
+                ServiceResource::class,
+                ProjectCategoryResource::class,
+                ProjectResource::class,
+                
+                // Management
+                LeadResource::class,
+                SettingResource::class,
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),
