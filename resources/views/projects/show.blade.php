@@ -1,22 +1,19 @@
 @extends('layouts.app')
 
-@section('title', $project->meta_title ?: $project->title)
-
-@section('meta')
-    @if($project->meta_description)
-        <meta name="description" content="{{ $project->meta_description }}">
-    @endif
-@endsection
-
 @section('content')
 <div class="container">
+    @if(isset($breadcrumbs))
     <nav class="breadcrumb">
-        <a href="{{ url('/') }}">Главная</a>
-        <span>></span>
-        <a href="{{ route('projects.index') }}">Проекты</a>
-        <span>></span>
-        <span>{{ $project->title }}</span>
+        @foreach($breadcrumbs as $crumb)
+            @if($loop->last)
+                <span>{{ $crumb['name'] }}</span>
+            @else
+                <a href="{{ $crumb['url'] }}">{{ $crumb['name'] }}</a>
+                <span>></span>
+            @endif
+        @endforeach
     </nav>
+    @endif
 
     <article class="project-detail">
         <h1>{{ $project->title }}</h1>
@@ -24,8 +21,8 @@
         <div class="project-images">
             @if($project->main_image)
                 <div class="main-image">
-                    <img id="main-image" src="{{ Storage::url($project->main_image) }}" 
-                         alt="{{ $project->title }}">
+                    <img id="main-image" src="{{ Storage::url($project->main_image) }}"
+                         alt="{{ $project->title }}" loading="eager">
                 </div>
             @endif
 
@@ -33,8 +30,9 @@
                 <div class="image-gallery">
                     @foreach($project->images as $image)
                         <div class="gallery-thumb">
-                            <img src="{{ Storage::url($image->image) }}" 
+                            <img src="{{ Storage::url($image->image) }}"
                                  alt="{{ $project->title }} - изображение {{ $loop->iteration }}"
+                                 loading="lazy"
                                  onclick="document.getElementById('main-image').src='{{ Storage::url($image->image) }}';">
                         </div>
                     @endforeach
@@ -91,7 +89,7 @@
                     <div class="price-box">
                         @if($project->price_from && $project->price_to)
                             <p class="price-range">
-                                {{ number_format($project->price_from, 0, ',', ' ') }} - 
+                                {{ number_format($project->price_from, 0, ',', ' ') }} -
                                 {{ number_format($project->price_to, 0, ',', ' ') }}
                             </p>
                             <p class="currency">руб.</p>
@@ -127,15 +125,21 @@
         @endif
     </article>
 
+    @if(isset($breadcrumbs))
+        {!! \App\Helpers\SeoHelper::breadcrumbList($breadcrumbs) !!}
+    @endif
+
+    {!! \App\Helpers\SeoHelper::projectSchema($project) !!}
+
     <section class="cta-section">
         <div class="cta-box">
             <h2>Заинтересовались проектом?</h2>
             <p>Оставьте заявку и мы рассчитаем стоимость строительства для вашего участка</p>
-            
+
             <form class="lead-form" action="{{ route('leads.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="project_id" value="{{ $project->id }}">
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Имя *</label>
@@ -146,22 +150,22 @@
                         <input type="tel" id="phone" name="phone" required>
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="email">Email *</label>
                         <input type="email" id="email" name="email" required>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="message">Сообщение</label>
                     <textarea id="message" name="message" rows="3" placeholder="Расскажите о ваших пожеланиях..."></textarea>
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary">Отправить заявку</button>
             </form>
-            
+
             <div id="form-message" class="form-message"></div>
         </div>
     </section>
@@ -172,14 +176,14 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const leadForm = document.querySelector('.lead-form');
-        
+
         if (leadForm) {
             leadForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(leadForm);
                 const messageContainer = document.getElementById('form-message');
-                
+
                 fetch('{{ route("leads.store") }}', {
                     method: 'POST',
                     body: formData,

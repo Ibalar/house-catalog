@@ -21,4 +21,20 @@ Route::prefix('projects')->name('projects.')->group(function () {
 
 Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
 
+Route::get('/sitemap.xml', function () {
+    $sitemapPath = public_path('sitemap.xml');
+    if (file_exists($sitemapPath)) {
+        return response()->file($sitemapPath, ['Content-Type' => 'application/xml']);
+    }
+    abort(404);
+})->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $content = "User-agent: *\n";
+    $content .= "Allow: /\n";
+    $content .= "Sitemap: " . url('/sitemap.xml') . "\n";
+
+    return response($content, 200, ['Content-Type' => 'text/plain']);
+})->name('robots');
+
 Route::get('/{slug}', [PageController::class, 'show'])->name('page.show')->where('slug', '.*');

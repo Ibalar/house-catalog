@@ -4,17 +4,38 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SeoHelper;
 use App\Models\Project;
 use App\Models\ProjectCategory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectController extends Controller
 {
     public function index(Request $request): View
     {
+        // Validate filters
+        $validated = $request->validate([
+            'type' => 'nullable|in:house,sauna',
+            'area_min' => 'nullable|numeric|min:0',
+            'area_max' => 'nullable|numeric|min:0',
+            'bedrooms' => 'nullable|integer|min:1|max:10',
+            'bathrooms' => 'nullable|integer|min:1|max:5',
+            'floors' => 'nullable|integer|min:1|max:3',
+            'has_garage' => 'nullable|boolean',
+            'roof_types' => 'nullable|array',
+            'roof_types.*' => 'string',
+            'styles' => 'nullable|array',
+            'styles.*' => 'string',
+            'price_min' => 'nullable|numeric|min:0',
+            'price_max' => 'nullable|numeric|min:0',
+            'sort' => 'nullable|in:featured,newest,price_asc,price_desc,default',
+        ]);
+
         $query = Project::where('is_published', true)
-            ->with('category', 'images');
+            ->select('id', 'title', 'slug', 'main_image', 'description', 'price_from', 'price_to', 'area', 'bedrooms', 'bathrooms', 'is_featured', 'category_id', 'floors')
+            ->with(['category:id,name,type', 'images:id,project_id,image,sort_order']);
 
         // Apply filters using when() methods
         $query = $query->when($request->get('type'), function ($q, $type) {
@@ -95,13 +116,27 @@ class ProjectController extends Controller
 
         $projects = $query->paginate(12)->appends($request->query());
 
-        $categories = ProjectCategory::orderBy('name')->get();
+        $categories = Cache::remember('projects_categories', now()->addHours(2), function () {
+            return ProjectCategory::select('id', 'name', 'type')->orderBy('name')->get();
+        });
 
         // Get available filter values from database
-        $availableValues = [
-            'roof_types' => Project::whereNotNull('roof_type')->distinct()->pluck('roof_type')->sort()->values()->all(),
-            'styles' => Project::whereNotNull('style')->distinct()->pluck('style')->sort()->values()->all(),
-        ];
+        $availableValues = Cache::remember('projects_available_values', now()->addHours(2), function () {
+            return [
+                'roof_types' => Project::whereNotNull('roof_type')
+                    ->distinct()
+                    ->orderBy('roof_type')
+                    ->pluck('roof_type')
+                    ->values()
+                    ->all(),
+                'styles' => Project::whereNotNull('style')
+                    ->distinct()
+                    ->orderBy('style')
+                    ->pluck('style')
+                    ->values()
+                    ->all(),
+            ];
+        });
 
         // Current active filters
         $filters = [
@@ -119,16 +154,44 @@ class ProjectController extends Controller
             'sort' => $sort,
         ];
 
-        return view('projects.index', compact('projects', 'categories', 'filters', 'availableValues'));
+        $breadcrumbs = [
+            ['name' => 'Главная', 'url' => url('/')],
+            ['name' => 'Проекты'],
+        ];
+
+        $seoData = [
+            'title' => SeoHelper::pageTitle('Проекты'),
+            'description' => SeoHelper::metaDescription('Каталог проектов домов и бань. Выберите идеальный проект для вашего участка'),
+            'canonical' => route('projects.index'),
+            'og_type' => 'website',
+            'og_image' => null,
+        ];
+
+        return view('projects.index', compact('projects', 'categories', 'filters', 'availableValues', 'breadcrumbs', 'seoData'));
     }
 
     public function show(string $slug): View
     {
         $project = Project::where('slug', $slug)
             ->where('is_published', true)
-            ->with('category', 'images')
+            ->select('id', 'title', 'slug', 'main_image', 'description', 'price_from', 'price_to', 'area', 'bedrooms', 'bathrooms', 'is_featured', 'category_id', 'floors', 'has_garage', 'roof_type', 'style', 'meta_title', 'meta_description')
+            ->with(['category:id,name,type', 'images:id,project_id,image,sort_order'])
             ->firstOrFail();
 
-        return view('projects.show', compact('project'));
+        $breadcrumbs = [
+            ['name' => 'Главная', 'url' => url('/')],
+            ['name' => 'Проекты', 'url' => route('projects.index')],
+            ['name' => $project->title],
+        ];
+
+        $seoData = [
+            'title' => SeoHelper::pageTitle($project->meta_title ?: $project->title),
+            'description' => SeoHelper::metaDescription($project->meta_description ?: $project->description),
+            'canonical' => route('projects.show', $project->slug),
+            'og_type' => 'product',
+            'og_image' => $project->main_image,
+        ];
+
+        return view('projects.show', compact('project', 'breadcrumbs', 'seoData'));
     }
 }

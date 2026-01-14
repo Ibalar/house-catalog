@@ -23,7 +23,7 @@
                 <div class="service-card">
                     @if($service->image)
                         <div class="service-image">
-                            <img src="{{ Storage::url($service->image) }}" alt="{{ $service->title }}">
+                            <img src="{{ Storage::url($service->image) }}" alt="{{ $service->title }}" loading="lazy">
                         </div>
                     @endif
                     <h3>{{ $service->title }}</h3>
@@ -45,7 +45,7 @@
                 <div class="project-card">
                     @if($project->main_image)
                         <div class="project-image">
-                            <img src="{{ Storage::url($project->main_image) }}" alt="{{ $project->title }}">
+                            <img src="{{ Storage::url($project->main_image) }}" alt="{{ $project->title }}" loading="lazy">
                         </div>
                     @endif
                     <div class="project-info">

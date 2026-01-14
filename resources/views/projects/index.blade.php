@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('title', 'Проекты')
-
 @push('styles')
 <style>
 .projects-page {
@@ -197,21 +195,21 @@
     .projects-page {
         flex-direction: column;
     }
-    
+
     .filters-sidebar {
         width: 100%;
         position: static;
         margin-bottom: 30px;
     }
-    
+
     .projects-main {
         width: 100%;
     }
-    
+
     .projects-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .sort-controls {
         flex-direction: column;
         gap: 10px;
@@ -223,10 +221,23 @@
 
 @section('content')
 <div class="container">
+    @if(isset($breadcrumbs))
+    <nav class="breadcrumb">
+        @foreach($breadcrumbs as $crumb)
+            @if($loop->last)
+                <span>{{ $crumb['name'] }}</span>
+            @else
+                <a href="{{ $crumb['url'] }}">{{ $crumb['name'] }}</a>
+                <span>></span>
+            @endif
+        @endforeach
+    </nav>
+    @endif
+
     <div class="projects-page">
         <aside class="filters-sidebar">
             <h2>Фильтры</h2>
-            
+
             <form class="filters-form" method="GET" action="{{ route('projects.index') }}">
                 <div class="filter-group">
                     <h3>Категория</h3>
@@ -299,7 +310,7 @@
                     <h3>Тип крыши</h3>
                     @foreach($availableValues['roof_types'] as $roofType)
                         <label class="filter-checkbox">
-                            <input type="checkbox" name="roof_types[]" value="{{ $roofType }}" 
+                            <input type="checkbox" name="roof_types[]" value="{{ $roofType }}"
                                    {{ in_array($roofType, request('roof_types', [])) ? 'checked' : '' }}>
                             {{ $roofType }}
                         </label>
@@ -310,7 +321,7 @@
                     <h3>Стиль</h3>
                     @foreach($availableValues['styles'] as $style)
                         <label class="filter-checkbox">
-                            <input type="checkbox" name="styles[]" value="{{ $style }}" 
+                            <input type="checkbox" name="styles[]" value="{{ $style }}"
                                    {{ in_array($style, request('styles', [])) ? 'checked' : '' }}>
                             {{ $style }}
                         </label>
@@ -338,7 +349,7 @@
                 <div class="results-count">
                     Найдено {{ $projects->total() }} {{ trans_choice('проект|проекта|проектов', $projects->total()) }}
                 </div>
-                
+
                 <select name="sort" class="sort-select" onchange="this.form.submit()">
                     <option value="default" {{ request('sort', 'default') == 'default' ? 'selected' : '' }}>По умолчанию</option>
                     <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>По популярности</option>
@@ -358,7 +369,7 @@
                         @if($project->main_image)
                             <div class="project-image">
                                 <a href="{{ route('projects.show', $project->slug) }}">
-                                    <img src="{{ Storage::url($project->main_image) }}" alt="{{ $project->title }}">
+                                    <img src="{{ Storage::url($project->main_image) }}" alt="{{ $project->title }}" loading="lazy">
                                 </a>
                             </div>
                         @endif
@@ -367,7 +378,7 @@
                             <h3>
                                 <a href="{{ route('projects.show', $project->slug) }}">{{ $project->title }}</a>
                             </h3>
-                            
+
                             <p class="project-description">{{ Str::limit($project->description, 100) }}</p>
 
                             <div class="project-specs">
@@ -412,6 +423,10 @@
             @endif
         </main>
     </div>
+
+    @if(isset($breadcrumbs))
+        {!! \App\Helpers\SeoHelper::breadcrumbList($breadcrumbs) !!}
+    @endif
 </div>
 @endsection
 
@@ -419,7 +434,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filterForm = document.querySelector('.filters-form');
-    
+
     // Auto-submit on radio/checkbox change could be implemented, but we'll keep the explicit submit button for now
 });
 </script>
