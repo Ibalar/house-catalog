@@ -50,7 +50,7 @@ class LeadController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Спасибо за заявку',
+                'message' => __('messages.thank_you_for_feedback'),
             ]);
         } catch (ValidationException $e) {
             Log::warning('Lead validation failed', [
@@ -70,7 +70,7 @@ class LeadController extends Controller
 
             return response()->json([
                 'success' => false,
-                'errors' => ['general' => 'Произошла ошибка при создании заявки. Попробуйте позже.'],
+                'errors' => ['general' => __('messages.error')],
             ], 500);
         }
     }

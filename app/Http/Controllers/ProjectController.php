@@ -155,13 +155,13 @@ class ProjectController extends Controller
         ];
 
         $breadcrumbs = [
-            ['name' => 'Главная', 'url' => url('/')],
-            ['name' => 'Проекты'],
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('admin.projects')],
         ];
 
         $seoData = [
-            'title' => SeoHelper::pageTitle('Проекты'),
-            'description' => SeoHelper::metaDescription('Каталог проектов домов и бань. Выберите идеальный проект для вашего участка'),
+            'title' => SeoHelper::pageTitle(__('admin.projects')),
+            'description' => SeoHelper::metaDescription(__('admin.projects')),
             'canonical' => route('projects.index'),
             'og_type' => 'website',
             'og_image' => null,
@@ -179,8 +179,8 @@ class ProjectController extends Controller
             ->firstOrFail();
 
         $breadcrumbs = [
-            ['name' => 'Главная', 'url' => url('/')],
-            ['name' => 'Проекты', 'url' => route('projects.index')],
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('admin.projects'), 'url' => route('projects.index')],
             ['name' => $project->title],
         ];
 

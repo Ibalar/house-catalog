@@ -102,9 +102,9 @@ return [
     ],
 
     // Localizations
-    'locale' => 'en',
+    'locale' => 'ru',
     'locale_key' => ChangeLocale::KEY,
     'locales' => [
-        // en
+        'ru',
     ],
 ];

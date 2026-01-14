@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $seoData['title'] ?? 'Строительная компания' }}</title>
+    <title>{{ $seoData['title'] ?? __('messages.site_default_name') }}</title>
 
     @if(!empty($seoData['description']))
         <meta name="description" content="{{ $seoData['description'] }}">
@@ -35,13 +35,13 @@
             <nav class="navbar">
                 <div class="logo">
                     <a href="{{ url('/') }}">
-                        <h1>{{ get_setting('site_name', 'Строительная компания') }}</h1>
+                        <h1>{{ get_setting('site_name', __('messages.site_default_name')) }}</h1>
                     </a>
                 </div>
                 <ul class="nav-menu">
-                    <li><a href="{{ url('/') }}">Главная</a></li>
-                    <li><a href="{{ route('services.index') }}">Услуги</a></li>
-                    <li><a href="{{ route('projects.index') }}">Проекты</a></li>
+                    <li><a href="{{ url('/') }}">{{ __('messages.home') }}</a></li>
+                    <li><a href="{{ route('services.index') }}">{{ __('admin.services') }}</a></li>
+                    <li><a href="{{ route('projects.index') }}">{{ __('admin.projects') }}</a></li>
                 </ul>
                 <div class="hamburger">
                     <span></span>
@@ -59,7 +59,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                {!! get_block('footer_content') ?: '<p>© ' . date('Y') . ' ' . get_setting('site_name', 'Строительная компания') . '. Все права защищены.</p>' !!}
+                {!! get_block('footer_content') ?: '<p>© ' . date('Y') . ' ' . get_setting('site_name', __('messages.site_default_name')) . '. ' . __('messages.all_rights_reserved') . '</p>' !!}
             </div>
         </div>
     </footer>
@@ -68,6 +68,17 @@
         {!! \App\Helpers\SeoHelper::organizationSchema() !!}
         {!! \App\Helpers\SeoHelper::localBusinessSchema() !!}
     @endif
+
+    <script>
+        window.translations = @json([
+            'success' => __('messages.success'),
+            'error' => __('messages.error'),
+            'server_error' => __('messages.server_error'),
+            'error_try_later' => __('messages.error_try_later'),
+        ]);
+    </script>
+
+    @stack('scripts')
 
     <script src="{{ asset('js/app.js') }}"></script>
 </body>

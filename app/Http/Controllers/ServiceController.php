@@ -28,13 +28,13 @@ class ServiceController extends Controller
         });
 
         $breadcrumbs = [
-            ['name' => 'Главная', 'url' => url('/')],
-            ['name' => 'Услуги'],
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('admin.services')],
         ];
 
         $seoData = [
-            'title' => SeoHelper::pageTitle('Услуги'),
-            'description' => SeoHelper::metaDescription('Наши услуги: строительство домов, бань и другие строительные работы'),
+            'title' => SeoHelper::pageTitle(__('admin.services')),
+            'description' => SeoHelper::metaDescription(__('admin.services')),
             'canonical' => route('services.index'),
             'og_type' => 'website',
             'og_image' => null,
@@ -55,14 +55,14 @@ class ServiceController extends Controller
             ->firstOrFail();
 
         $breadcrumbs = [
-            ['name' => 'Главная', 'url' => url('/')],
-            ['name' => 'Услуги', 'url' => route('services.index')],
+            ['name' => __('messages.home'), 'url' => url('/')],
+            ['name' => __('admin.services'), 'url' => route('services.index')],
             ['name' => $service->title],
         ];
 
         $seoData = [
-            'title' => SeoHelper::pageTitle($service->title . ' - Услуги'),
-            'description' => SeoHelper::metaDescription($service->description ?? "Услуга: {$service->title}"),
+            'title' => SeoHelper::pageTitle($service->title . ' - ' . __('admin.services')),
+            'description' => SeoHelper::metaDescription($service->description ?? $service->title),
             'canonical' => route('services.show', $service->slug),
             'og_type' => 'article',
             'og_image' => $service->image,
