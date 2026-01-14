@@ -36,8 +36,8 @@ class HomeController extends Controller
         });
 
         $seoData = [
-            'title' => SeoHelper::pageTitle(get_setting('site_name', 'Строительная компания')),
-            'description' => get_setting('site_description', 'Профессиональное строительство домов и бань'),
+            'title' => SeoHelper::pageTitle(get_setting('site_name', __('messages.site_default_name'))),
+            'description' => get_setting('site_description', __('messages.site_default_description')),
             'canonical' => url('/'),
         ];
 

@@ -236,36 +236,36 @@
 
     <div class="projects-page">
         <aside class="filters-sidebar">
-            <h2>Фильтры</h2>
+            <h2>{{ __('messages.filter_projects') }}</h2>
 
             <form class="filters-form" method="GET" action="{{ route('projects.index') }}">
                 <div class="filter-group">
-                    <h3>Категория</h3>
+                    <h3>{{ __('admin.categories') }}</h3>
                     <label class="filter-checkbox">
                         <input type="radio" name="type" value="" {{ !request('type') ? 'checked' : '' }}>
-                        Все
+                        {{ __('messages.all') }}
                     </label>
                     <label class="filter-checkbox">
                         <input type="radio" name="type" value="house" {{ request('type') === 'house' ? 'checked' : '' }}>
-                        Дома
+                        {{ __('messages.houses') }}
                     </label>
                     <label class="filter-checkbox">
                         <input type="radio" name="type" value="sauna" {{ request('type') === 'sauna' ? 'checked' : '' }}>
-                        Бани
+                        {{ __('messages.baths') }}
                     </label>
                 </div>
 
                 <div class="filter-group">
-                    <h3>Площадь (м²)</h3>
+                    <h3>{{ __('messages.area') }} (м²)</h3>
                     <div class="range-inputs">
-                        <input type="number" name="area_min" placeholder="От" value="{{ request('area_min') }}" min="0" step="0.1">
+                        <input type="number" name="area_min" placeholder="{{ __('messages.from') }}" value="{{ request('area_min') }}" min="0" step="0.1">
                         <span>-</span>
-                        <input type="number" name="area_max" placeholder="До" value="{{ request('area_max') }}" min="0" step="0.1">
+                        <input type="number" name="area_max" placeholder="{{ __('messages.to') }}" value="{{ request('area_max') }}" min="0" step="0.1">
                     </div>
                 </div>
 
                 <div class="filter-group">
-                    <h3>Спальни</h3>
+                    <h3>{{ __('messages.rooms') }}</h3>
                     <select name="bedrooms">
                         <option value="">-- Все --</option>
                         @for($i = 1; $i <= 10; $i++)
@@ -277,7 +277,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h3>Санузлы</h3>
+                    <h3>{{ __('messages.bathrooms') }}</h3>
                     <select name="bathrooms">
                         <option value="">-- Все --</option>
                         @for($i = 1; $i <= 5; $i++)
@@ -289,7 +289,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h3>Этажность</h3>
+                    <h3>{{ __('messages.floors') }}</h3>
                     <select name="floors">
                         <option value="">-- Все --</option>
                         <option value="1" {{ request('floors') == '1' ? 'selected' : '' }}>1</option>
@@ -299,15 +299,15 @@
                 </div>
 
                 <div class="filter-group">
-                    <h3>Гараж</h3>
+                    <h3>{{ __('messages.garage') }}</h3>
                     <label class="filter-checkbox">
                         <input type="checkbox" name="has_garage" value="1" {{ request('has_garage') ? 'checked' : '' }}>
-                        Наличие гаража
+                        {{ __('messages.garage') }}
                     </label>
                 </div>
 
                 <div class="filter-group">
-                    <h3>Тип крыши</h3>
+                    <h3>{{ __('messages.roof_type') }}</h3>
                     @foreach($availableValues['roof_types'] as $roofType)
                         <label class="filter-checkbox">
                             <input type="checkbox" name="roof_types[]" value="{{ $roofType }}"
@@ -318,7 +318,7 @@
                 </div>
 
                 <div class="filter-group">
-                    <h3>Стиль</h3>
+                    <h3>{{ __('messages.style') }}</h3>
                     @foreach($availableValues['styles'] as $style)
                         <label class="filter-checkbox">
                             <input type="checkbox" name="styles[]" value="{{ $style }}"
@@ -329,21 +329,21 @@
                 </div>
 
                 <div class="filter-group">
-                    <h3>Цена (₽)</h3>
+                    <h3>{{ __('messages.price') }} (₽)</h3>
                     <div class="range-inputs">
-                        <input type="number" name="price_min" placeholder="От" value="{{ request('price_min') }}" min="0" step="1000">
+                        <input type="number" name="price_min" placeholder="{{ __('messages.from') }}" value="{{ request('price_min') }}" min="0" step="1000">
                         <span>-</span>
-                        <input type="number" name="price_max" placeholder="До" value="{{ request('price_max') }}" min="0" step="1000">
+                        <input type="number" name="price_max" placeholder="{{ __('messages.to') }}" value="{{ request('price_max') }}" min="0" step="1000">
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Применить фильтры</button>
-                <a href="{{ route('projects.index') }}" class="btn btn-secondary">Сбросить все фильтры</a>
+                <button type="submit" class="btn btn-primary">{{ __('messages.apply_filters') }}</button>
+                <a href="{{ route('projects.index') }}" class="btn btn-secondary">{{ __('messages.reset_filters') }}</a>
             </form>
         </aside>
 
         <main class="projects-main">
-            <h1>Проекты</h1>
+            <h1>{{ __('admin.projects') }}</h1>
 
             <div class="sort-controls">
                 <div class="results-count">
@@ -351,11 +351,11 @@
                 </div>
 
                 <select name="sort" class="sort-select" onchange="this.form.submit()">
-                    <option value="default" {{ request('sort', 'default') == 'default' ? 'selected' : '' }}>По умолчанию</option>
-                    <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>По популярности</option>
-                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Новые первыми</option>
-                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Цена: по возрастанию</option>
-                    <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Цена: по убыванию</option>
+                    <option value="default" {{ request('sort', 'default') == 'default' ? 'selected' : '' }}>{{ __('messages.default') }}</option>
+                    <option value="featured" {{ request('sort') == 'featured' ? 'selected' : '' }}>{{ __('messages.by_popularity') }}</option>
+                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('messages.newest_first') }}</option>
+                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>{{ __('messages.price_asc') }}</option>
+                    <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>{{ __('messages.price_desc') }}</option>
                 </select>
             </div>
 
@@ -363,7 +363,7 @@
                 @forelse($projects as $project)
                     <article class="project-card {{ $project->is_featured ? 'featured' : '' }}">
                         @if($project->is_featured)
-                            <div class="featured-badge">⭐ Популярный</div>
+                            <div class="featured-badge">⭐ {{ __('messages.popular') }}</div>
                         @endif
 
                         @if($project->main_image)
@@ -406,12 +406,12 @@
                                 </div>
                             @endif
 
-                            <a href="{{ route('projects.show', $project->slug) }}" class="btn btn-primary">Подробнее</a>
+                            <a href="{{ route('projects.show', $project->slug) }}" class="btn btn-primary">{{ __('messages.more_details') }}</a>
                         </div>
                     </article>
                 @empty
                     <div class="no-projects">
-                        <p>Проекты не найдены. Попробуйте изменить фильтры.</p>
+                        <p>{{ __('messages.projects_not_found') }}</p>
                     </div>
                 @endforelse
             </div>

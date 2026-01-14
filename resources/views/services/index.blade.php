@@ -15,7 +15,7 @@
     </nav>
     @endif
 
-    <h1>Услуги</h1>
+    <h1>{{ __('admin.services') }}</h1>
 
     <div class="services-list">
         @foreach($services as $service)
@@ -30,7 +30,7 @@
                     <div class="service-content">
                         <h2>{{ $service->title }}</h2>
                         <p>{{ $service->description }}</p>
-                        <a href="{{ route('services.show', $service->slug) }}" class="btn btn-primary">Подробнее</a>
+                        <a href="{{ route('services.show', $service->slug) }}" class="btn btn-primary">{{ __('messages.more_details') }}</a>
                     </div>
                 </div>
 

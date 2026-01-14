@@ -18,7 +18,7 @@ class PageController extends Controller
             ->firstOrFail();
 
         $breadcrumbs = [
-            ['name' => 'Главная', 'url' => url('/')],
+            ['name' => __('messages.home'), 'url' => url('/')],
             ['name' => $page->title],
         ];
 

@@ -38,7 +38,7 @@
                         <div class="child-service-card">
                             <h3>{{ $child->title }}</h3>
                             <p>{{ $child->description }}</p>
-                            <a href="{{ route('services.show', $child->slug) }}" class="btn btn-secondary">Подробнее</a>
+                            <a href="{{ route('services.show', $child->slug) }}" class="btn btn-secondary">{{ __('messages.more_details') }}</a>
                         </div>
                     @endforeach
                 </div>

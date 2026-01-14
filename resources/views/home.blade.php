@@ -6,10 +6,10 @@
 <div class="hero">
     <div class="container">
         <h2 class="hero-title">
-            {{ get_setting('site_name', 'Строительная компания') }}
+            {{ get_setting('site_name', __('messages.site_default_name')) }}
         </h2>
         <p class="hero-description">
-            {{ get_setting('site_description', 'Профессиональное строительство домов и бань') }}
+            {{ get_setting('site_description', __('messages.site_default_description')) }}
         </p>
     </div>
 </div>
@@ -17,7 +17,7 @@
 @if($topServices->count() > 0)
 <section class="section">
     <div class="container">
-        <h2 class="section-title">Популярные услуги</h2>
+        <h2 class="section-title">{{ __('messages.popular_services') }}</h2>
         <div class="services-grid">
             @foreach($topServices as $service)
                 <div class="service-card">
@@ -28,7 +28,7 @@
                     @endif
                     <h3>{{ $service->title }}</h3>
                     <p>{{ Str::limit($service->description, 100) }}</p>
-                    <a href="{{ route('services.show', $service->slug) }}" class="btn btn-primary">Подробнее</a>
+                    <a href="{{ route('services.show', $service->slug) }}" class="btn btn-primary">{{ __('messages.more_details') }}</a>
                 </div>
             @endforeach
         </div>
@@ -39,7 +39,7 @@
 @if($featuredProjects->count() > 0)
 <section class="section projects-section">
     <div class="container">
-        <h2 class="section-title">Популярные проекты</h2>
+        <h2 class="section-title">{{ __('messages.popular_projects') }}</h2>
         <div class="projects-grid">
             @foreach($featuredProjects as $project)
                 <div class="project-card">
@@ -62,7 +62,7 @@
                                 @endif
                             </div>
                         @endif
-                        <a href="{{ route('projects.show', $project->slug) }}" class="btn btn-primary">Подробнее</a>
+                        <a href="{{ route('projects.show', $project->slug) }}" class="btn btn-primary">{{ __('messages.more_details') }}</a>
                     </div>
                 </div>
             @endforeach
@@ -74,28 +74,28 @@
 <section class="section cta-section">
     <div class="container">
         <div class="cta-box">
-            <h2>Оставьте заявку</h2>
-            <p>Мы поможем выбрать и построить ваш идеальный дом</p>
+            <h2>{{ __('messages.leave_request') }}</h2>
+            <p>{{ __('messages.help_choose_build') }}</p>
             
             <form class="lead-form" action="{{ route('leads.store') }}" method="POST">
                 @csrf
                 <div class="form-group">
-                    <label for="name">Имя *</label>
+                    <label for="name">{{ __('attributes.name') }} *</label>
                     <input type="text" id="name" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Телефон *</label>
+                    <label for="phone">{{ __('attributes.phone') }} *</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email *</label>
+                    <label for="email">{{ __('attributes.email') }} *</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="message">Сообщение</label>
+                    <label for="message">{{ __('attributes.message') }}</label>
                     <textarea id="message" name="message" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                <button type="submit" class="btn btn-primary">{{ __('messages.send_request') }}</button>
             </form>
             
             <div id="form-message" class="form-message"></div>
@@ -154,7 +154,7 @@
                     }
                 })
                 .catch(error => {
-                    messageContainer.innerHTML = '<div class="alert alert-error">Произошла ошибка. Попробуйте позже.</div>';
+                    messageContainer.innerHTML = '<div class="alert alert-error">' + (window.translations?.error_try_later || '{{ __('messages.error_try_later') }}') + '</div>';
                 });
             });
         });
